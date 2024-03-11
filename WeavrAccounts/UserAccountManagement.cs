@@ -80,31 +80,35 @@ namespace WeavrAccounts
 
             if (!response.IsSuccessStatusCode)
             {
-                if(response.StatusCode == (HttpStatusCode)409)
+                if (response.StatusCode == (HttpStatusCode)409)
                 {
                     throw new HttpRequestException("User already exists", null, HttpStatusCode.Conflict);
                 }
+
+                throw new HttpRequestException("Unkown error", null, response.StatusCode);
             }
+            else
+            {
 
+                var rootUser = responseBody["rootUser"];
+                return new UserInfo(rootUser["id"]["id"].ToString(),
+                        FirstName: rootUser["name"].ToString(),
+                        LastName: rootUser["surname"].ToString(),
+                        Mobile: $"{rootUser["mobile"]!["countryCode"]!.ToString()} {rootUser["mobile"]!["number"]!.ToString()}",
+                        Email: rootUser["email"].ToString(),
+                        AddressLine1: rootUser["address"]["addressLine1"].ToString(),
+                        AddressLine2: rootUser["address"]["addressLine2"].ToString(),
+                        City: rootUser["address"]["city"].ToString(),
+                        Postcode: rootUser["address"]["postcode"]?.ToString(),
+                        State: rootUser["address"]["state"].ToString(),
+                        Country: rootUser["address"]["country"].ToString(),
+                        // The universal time forces UTC. This is equired by the PostGreSql provider
+                        DateOfBirth: DateTime.Parse($"{rootUser["dateOfBirth"]["day"]}/{rootUser["dateOfBirth"]["month"]}/{rootUser["dateOfBirth"]["year"]}").ToUniversalTime(),
+                        emailVerified: (rootUser["emailVerified"].ToString() == "true"),
+                        mobileNumberVerified: (rootUser["mobileNumberVerified"].ToString() == "true")
 
-            var rootUser = responseBody["rootUser"];
-            return new UserInfo(rootUser["id"]["id"].ToString(),
-                    FirstName: rootUser["name"].ToString(),
-                    LastName: rootUser["surname"].ToString(),
-                    Mobile: $"{rootUser["mobile"]!["countryCode"]!.ToString()} {rootUser["mobile"]!["number"]!.ToString()}",
-                    Email: rootUser["email"].ToString(),
-                    AddressLine1: rootUser["address"]["addressLine1"].ToString(),
-                    AddressLine2: rootUser["address"]["addressLine2"].ToString(),
-                    City: rootUser["address"]["city"].ToString(),
-                    Postcode: rootUser["address"]["postcode"]?.ToString(),
-                    State: rootUser["address"]["state"].ToString(),
-                    Country: rootUser["address"]["country"].ToString(),
-                    // The universal time forces UTC. This is equired by the PostGreSql provider
-                    DateOfBirth: DateTime.Parse($"{rootUser["dateOfBirth"]["day"]}/{rootUser["dateOfBirth"]["month"]}/{rootUser["dateOfBirth"]["year"]}").ToUniversalTime(),
-                    emailVerified: (rootUser["emailVerified"].ToString() == "true"),
-                    mobileNumberVerified: (rootUser["mobileNumberVerified"].ToString() == "true")
-
-                );
+                    );
+            }
         }
 
 

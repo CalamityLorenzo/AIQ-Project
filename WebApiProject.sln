@@ -7,11 +7,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiProject", "src\WebApi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLayer", "src\DbLayer\DbLayer.csproj", "{6D2DAF1E-4F97-4FA8-B7D9-CFD26E92091A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeavrAccounts", "WeavrAccounts\WeavrAccounts.csproj", "{55E9AC63-5B2D-470A-90D6-3DB47B8C3589}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeavrAccounts", "WeavrAccounts\WeavrAccounts.csproj", "{55E9AC63-5B2D-470A-90D6-3DB47B8C3589}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{34023EE9-FD8A-4590-AB7A-33B70A743CC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "appDefinitions", "appDefinitions\appDefinitions.csproj", "{C9F24BC2-F466-462C-9C17-ECCB5FA913F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appDefinitions", "appDefinitions\appDefinitions.csproj", "{C9F24BC2-F466-462C-9C17-ECCB5FA913F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED159F24-268B-4465-9696-F6F1CECACB7F}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
