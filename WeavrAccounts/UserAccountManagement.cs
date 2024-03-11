@@ -1,5 +1,6 @@
 ﻿using appDefinitions;
 using appDefinitions.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Headers;
@@ -10,21 +11,24 @@ namespace WeavrAccounts
 {
     public class UserAccountManagement : IUserManagement
     {
+        private readonly ILogger<UserAccountManagement> logger;
         private HttpClient client;
         private WeavrDetails options;
 
-        public UserAccountManagement(IHttpClientFactory clientFactory, IOptions<WeavrDetails> opts)
+        public UserAccountManagement(ILogger<UserAccountManagement> logger, IHttpClientFactory clientFactory, IOptions<WeavrDetails> opts)
         {
             this.client = clientFactory.CreateClient();
             this.options = opts.Value;
             client.BaseAddress = new Uri(options.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("api-key", new string[] { this.options.ApiKey });
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<UserInfo>> AllUsers()
         {
 
+            logger.LogInformation("All Users");
             var request = new HttpRequestMessage(HttpMethod.Get, "/multi/users?offset=0&limit=1&active=true&email=user%40example.com&tag=string");
             request.Headers.Add("api-key", new string[] { this.options.ApiKey });
 
@@ -34,6 +38,7 @@ namespace WeavrAccounts
         }
 
         // Sends the new user request to Weavr
+
         public async Task<UserInfo> CreateNewUser(BasicNewUserInfo userInfo)
         {
             var dateOfBirth = DateTime.Parse(userInfo.DateOfBirth);
@@ -77,9 +82,8 @@ namespace WeavrAccounts
             {
                 if(response.StatusCode == (HttpStatusCode)409)
                 {
-                    throw new Exception("User already exists");
+                    throw new HttpRequestException("User already exists", null, HttpStatusCode.Conflict);
                 }
-               ;
             }
 
 

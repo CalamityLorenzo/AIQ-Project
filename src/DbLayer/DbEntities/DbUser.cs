@@ -1,5 +1,6 @@
-﻿namespace DbLayer
+﻿namespace DbLayer.DbEntities
 {
+    // Database storage
     internal class DbUserInfo
     {
         public string Id { get; set; }

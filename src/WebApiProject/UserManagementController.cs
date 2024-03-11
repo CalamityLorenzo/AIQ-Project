@@ -22,16 +22,22 @@ namespace WebApiProject
         [HttpPost]
         public async Task<IActionResult> CreateNewUserRequest([FromBody] NewUser user)
         {
-            this.logger.LogInformation("Create New User Request Started");
-            // Validate new user is some way...
+            try
+            {
+                this.logger.LogInformation("Create New User Request Started");
+                // Validate new user is some way...
 
-            //I can't imagine this is th best way to do this...
-            var requestIp = HttpContext.Connection.RemoteIpAddress.ToString();
+                //I can't imagine this is th best way to do this...
+                var requestIp = HttpContext.Connection.RemoteIpAddress.ToString();
 
-            var createdUser =  await userManagement.CreateNewUser(new BasicNewUserInfo(user.FirstName, user.LastName, user.Mobile, user.Email, user.DateOfBirth, user.AddressLine1, user.AddressLine2, user.City, user.Postcode, user.State, user.Country,  requestIp));
-            await dbService.Users.AddNewUser(createdUser);
-            this.logger.LogInformation("Create New User Request:Success");
-            return new OkObjectResult(new { user = createdUser });
+                var createdUser = await userManagement.CreateNewUser(new BasicNewUserInfo(user.FirstName, user.LastName, user.Mobile, user.Email, user.DateOfBirth, user.AddressLine1, user.AddressLine2, user.City, user.Postcode, user.State, user.Country, requestIp));
+                await dbService.Users.AddNewUser(createdUser);
+                this.logger.LogInformation("Create New User Request:Success");
+                return new OkObjectResult(new { user = createdUser });
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict) {
+                return StatusCode(409, ex.Message);
+            }
         }
 
 
@@ -39,11 +45,9 @@ namespace WebApiProject
         public async Task<IActionResult> GetAllUsers()
         {
             this.logger.LogInformation("List all Users");
-
-            var users = await userManagement.AllUsers();
-
+            IEnumerable<UserInfo> users = await dbService.Users.AllUsers();
             this.logger.LogInformation("List all UsersLSuccess");
-            return Ok();
+            return Ok(users);
 
         }
 

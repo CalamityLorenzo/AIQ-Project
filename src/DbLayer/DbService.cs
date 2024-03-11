@@ -1,18 +1,18 @@
 ﻿using appDefinitions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using appDefinitions.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DbLayer
 {
+    // IMplementation of db Service.
     public class DbService : IDbService
     {
+        private readonly ILogger<DbService> logger;
         private AppDbContext ctx;
 
-        public DbService(AppDbContext ctx) { this.ctx = ctx; }
-        public IDbUsers Users => new UserService(ctx);
+        public DbService(ILogger<DbService> logger, AppDbContext ctx) { this.logger = logger; this.ctx = ctx; }
+        public IDbUsers Users => new UserService(logger, ctx);
+
+  
     }
 }

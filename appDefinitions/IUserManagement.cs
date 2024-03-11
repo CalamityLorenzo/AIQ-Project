@@ -2,6 +2,9 @@
 
 namespace appDefinitions
 {
+
+    // Interface for the main user service,
+    // Effectively interacting with Weavr.
   public interface IUserManagement
     {
         Task<UserInfo> CreateNewUser(BasicNewUserInfo userInfo);
